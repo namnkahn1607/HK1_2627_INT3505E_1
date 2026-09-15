@@ -41,6 +41,7 @@ def list_book():
     limit = int(request.args.get("limit", 20))
     q = request.args.get("q", "").strip().lower()
     items = [book for book in BOOKS if q in book["title"].lower()]
+    del items[limit:]
     return jsonify({"items": items}), 200
 
 @app.route("/book/<book_id>")
