@@ -8,10 +8,12 @@
 from flask import Flask
 
 app = Flask(__name__)
-# "/" is the root path - pointing to index()
-@app.route("/")
 
+# "/" is the root path (endpoint).
+# It defaults to the function index() declared below as its handler.
+@app.route("/")
 def index():
+    # Flask 3.x auto-converts to JSON without the need to jsonify().
     return {"message": "Hello, This is API!"}
 
 if __name__ == "__main__":
