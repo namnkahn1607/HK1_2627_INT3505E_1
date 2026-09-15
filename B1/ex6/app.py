@@ -36,7 +36,7 @@ app = Flask(__name__)
 @app.route("/books", methods=["GET"])
 def list_books():
     n = int(request.args.get("limit", 100))
-    return jsonify(BOOKS[:n], 200)
+    return jsonify(BOOKS[:n]), 200
 
 @app.route("/books/<int:bid>", methods=["GET"])
 def get_book(bid):
