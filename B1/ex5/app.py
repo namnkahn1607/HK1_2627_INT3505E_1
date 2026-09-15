@@ -2,9 +2,19 @@
 #
 # 1XX - Informational
 # 2XX - Success
+#   200 OK - GET/PUT/PATCH success
+#   201 Created - POST success
+#   204 No Content - DELETE success
 # 3XX - Redirection
 # 4XX - Client-side error
+#   400 Bad Request - Error JSON
+#   404 Not Found - Resource missing
+#   409 Conflict - Conflict states
+#   422 Unprocessable - Wrong logic
+#   429 Too many - Rate limiting
 # 5XX - Server-side error
+#   500 Internal - Unknown error
+#   503 Unavailable - Maintainance
 
 from flask import Flask
 
