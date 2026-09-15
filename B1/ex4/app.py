@@ -27,9 +27,9 @@ BOOKS = [
     }
 ]
 
-def find_by_id(id: str) -> dict | None:
+def find_by_id(book_id: str) -> dict | None:
     for book in BOOKS:
-        if book["id"] == id:
+        if book["id"] == book_id:
             return book
 
     return None
