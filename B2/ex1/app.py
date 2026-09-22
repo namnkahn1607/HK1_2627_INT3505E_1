@@ -23,7 +23,7 @@ def create_book():
     p = request.get_json(silent=True) or {}
 
     t = (p.get("title") or "").strip()
-    a = (p.get("author") or "")
+    a = p.get("author") or []
     if not t or not a:
         return jsonify({"error": "title and author required"}), 422
 
