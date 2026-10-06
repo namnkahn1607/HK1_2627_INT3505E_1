@@ -13,3 +13,23 @@
 | Sub-collection | comments của post | `/posts/{id}/comments` |
 | Singleton sub-resource | profile của user | `/users/{id}/profile` |
 | Relationship | tag <-> post, user -> user | `/posts/{id}/tags/{tag}`, `/users/{id}/following/{target}` |
+
+### 3. Vẽ sơ đồ cây endpoint và quyết định version segment
+
+```
+/api/v1
+├── /posts
+│   └── /{post_id}
+│       ├── /comments
+│       └── /tags
+│           └── /{tag}
+├── /comments
+│   └── /{comment_id}
+├── /tags
+└── /users
+    └── /{user_id}
+        ├── /profile
+        ├── /following
+        │   └── /{target_id}
+        └── /followers
+```
