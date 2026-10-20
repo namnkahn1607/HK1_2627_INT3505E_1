@@ -59,3 +59,10 @@ def json_body(schema_name):
             errors=[{"field": "/".join(str(p) for p in e.path), "message": e.message} for e in errors],
         )
     return payload
+
+
+def get_or_404(session, model, pk, name):
+    obj = session.get(model, pk)
+    if obj is None:
+        raise ApiError(404, "not_found", f"{name} {pk} not found")
+    return obj
