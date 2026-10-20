@@ -7,9 +7,6 @@ erDiagram
     AUTHOR ||--o{ BOOK_AUTHOR : ""
     BOOK ||--o{ REVIEW : "has (strong)"
     USER ||--o{ REVIEW : writes
-    USER ||--o{ ORDER : places
-    ORDER ||--|{ ORDER_ITEM : contains
-    BOOK ||--o{ ORDER_ITEM : "ordered as"
 
     CATEGORY { int id PK
         string name UK
@@ -36,11 +33,4 @@ erDiagram
         int user_id FK
         int rating "1..5"
         text comment }
-    ORDER { int id PK
-        int user_id FK
-        datetime created_at }
-    ORDER_ITEM { int order_id PK,FK
-        int book_id PK,FK
-        int quantity
-        int unit_price_vnd "snapshot" }
 ```
