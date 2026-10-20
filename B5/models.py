@@ -1,8 +1,9 @@
 """ORM models"""
 
 from datetime import datetime, timezone
+from typing import Optional
 
-from sqlalchemy import DateTime, String
+from sqlalchemy import DateTime, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 CURRENCY = "VND"
@@ -27,6 +28,7 @@ class Author(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[int] = mapped_column(String(100))
+    bio: Mapped[Optional[str]] = mapped_column(Text)
 
     def to_dict(self):
         return {"id": self.id, "name": self.name}
@@ -37,9 +39,10 @@ class Category(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), unique=True)
+    slug: Mapped[str] = mapped_column(String(100), unique=True)
 
     def to_dict(self):
-        return {"id": self.id, "name": self.name}
+        return {"id": self.id, "name": self.name, "slug": self.slug}
 
 
 class User(Base):
