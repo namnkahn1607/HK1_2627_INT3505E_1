@@ -23,6 +23,10 @@ def iso(dt):
     return dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def money(amount):
+    return {"amount": amount, "currency": CURRENCY}
+
+
 class Author(Base):
     __tablename__ = "authors"
 
@@ -57,8 +61,41 @@ class User(Base):
         return {"id": self.id, "displayName": self.display_name, "createdAt": iso(self.created_at)}
 
 
-class Book(Base):  # Temporary stub
-    pass
+class Book(Base):
+    __tablename__ = "books"
+    __table_args__ = (CheckConstraint("price_vnd >= 0"), CheckConstraint("stock >= 0"))
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(200))
+    isbn: Mapped[str] = mapped_column(String(13), unique=True)
+    price_vnd: Mapped[int]
+    stock: Mapped[int] = mapped_column(default=0)
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    category: Mapped[Category] = relationship()
+    author_links: Mapped[list["BookAuthor"]] = relationship(
+        back_populates="book", cascade="all, delete-orphan", order_by="BookAuthor.author_id"
+    )
+    reviews: Mapped[list["Review"]] = relationship(cascade="all, delete-orphan")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "isbn": self.isbn,
+            "price": money(self.price_vnd),
+            "stock": self.stock,
+            "inStock": self.stock > 0,
+            "category": self.category.to_dict(),
+            "authors": [link.to_dict() for link in self.author_links],
+            "createdAt": iso(self.created_at),
+        }
+
+
+class BookAuthor(Base):  # Another temporary stub
+    def to_dict(self):
+        pass
 
 
 class Review(Base):
