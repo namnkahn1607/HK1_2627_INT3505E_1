@@ -5,6 +5,7 @@
   "required": ["name"],
   "additionalProperties": false,
   "properties": {
-    "name": {"type": "string", "minLength": 1, "maxLength": 100}
+    "name": {"type": "string", "minLength": 1, "maxLength": 100},
+    "bio": {"type": ["string", "null"], "maxLength": 2000}
   }
 }

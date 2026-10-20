@@ -2,9 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Category (request body for POST /categories)",
   "type": "object",
-  "required": ["name"],
+  "required": ["name", "slug"],
   "additionalProperties": false,
   "properties": {
-    "name": {"type": "string", "minLength": 1, "maxLength": 100}
+    "name": {"type": "string", "minLength": 1, "maxLength": 100},
+    "slug": {"type": "string", "maxLength": 100, "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"}
   }
 }

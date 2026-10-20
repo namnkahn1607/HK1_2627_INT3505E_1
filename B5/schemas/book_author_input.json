@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Book-author link (request body for POST /books/{id}/authors)",
+  "type": "object",
+  "required": ["authorId"],
+  "additionalProperties": false,
+  "properties": {
+    "authorId": {"type": "integer", "minimum": 1},
+    "role": {"enum": ["lead", "co"], "default": "co"}
+  }
+}

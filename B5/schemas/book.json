@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Book (response)",
+  "type": "object",
+  "required": ["id", "title", "isbn", "price", "stock", "inStock", "category", "authors", "createdAt"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "integer", "minimum": 1},
+    "title": {"type": "string", "minLength": 1, "maxLength": 200},
+    "isbn": {"type": "string", "pattern": "^[0-9]{13}$"},
+    "price": {"$ref": "#/$defs/Money"},
+    "stock": {"type": "integer", "minimum": 0},
+    "inStock": {"type": "boolean"},
+    "category": {"$ref": "#/$defs/CategoryRef"},
+    "authors": {"type": "array", "items": {"$ref": "#/$defs/BookAuthor"}},
+    "createdAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "Money": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "additionalProperties": false,
+      "properties": {
+        "amount": {"type": "integer", "minimum": 0},
+        "currency": {"const": "VND"}
+      }
+    },
+    "CategoryRef": {
+      "type": "object",
+      "required": ["id", "name", "slug"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "name": {"type": "string"},
+        "slug": {"type": "string"}
+      }
+    },
+    "BookAuthor": {
+      "type": "object",
+      "required": ["id", "name", "role"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "name": {"type": "string"},
+        "role": {"enum": ["lead", "co"]}
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Review (request body for POST /books/{id}/reviews)",
+  "type": "object",
+  "required": ["userId", "rating"],
+  "additionalProperties": false,
+  "properties": {
+    "userId": {"type": "integer", "minimum": 1},
+    "rating": {"type": "integer", "minimum": 1, "maximum": 5},
+    "comment": {"type": ["string", "null"], "maxLength": 2000}
+  }
+}
