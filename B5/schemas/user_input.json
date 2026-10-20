@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "User (request body for POST /users)",
+  "type": "object",
+  "required": ["email", "displayName"],
+  "additionalProperties": false,
+  "properties": {
+    "email": {"type": "string", "maxLength": 255, "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"},
+    "displayName": {"type": "string", "minLength": 1, "maxLength": 120}
+  }
+}
