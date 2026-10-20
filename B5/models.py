@@ -3,7 +3,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import DateTime, String, Text
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 CURRENCY = "VND"
@@ -55,3 +55,32 @@ class User(Base):
 
     def to_dict(self):  # do not expose email
         return {"id": self.id, "displayName": self.display_name, "createdAt": iso(self.created_at)}
+
+
+class Book(Base):  # Temporary stub
+    pass
+
+
+class Review(Base):
+    __tablename__ = "reviews"
+    __table_args__ = (
+        CheckConstraint("rating BETWEEN 1 AND 5"),
+        UniqueConstraint("book_id", "user_id"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    rating: Mapped[int]
+    comment: Mapped[Optional[str]] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "bookId": self.book_id,
+            "userId": self.user_id,
+            "rating": self.rating,
+            "comment": self.comment,
+            "createdAt": iso(self.created_at),
+        }

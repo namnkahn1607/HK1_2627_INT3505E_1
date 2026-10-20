@@ -66,3 +66,10 @@ def get_or_404(session, model, pk, name):
     if obj is None:
         raise ApiError(404, "not_found", f"{name} {pk} not found")
     return obj
+
+
+def require_ref(session, model, pk, field):
+    obj = session.get(model, pk)
+    if obj is None:
+        raise ApiError(422, "invalid_reference", f"{field} {pk} does not exist", field=field)
+    return obj
