@@ -17,7 +17,7 @@ def _load_schemas():
 SCHEMAS = _load_schemas()
 
 def get_session():
-    """Each request use one SQLAlchemy session. Will be closed upon teardown"""
+    """Each request use one SQLAlchemy session. Closed upon teardown."""
     if "db" not in g:
         # Default to app's own factory in case db is not configured manually.
         g.db = current_app.extensions["session_factory"]()
