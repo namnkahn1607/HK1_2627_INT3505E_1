@@ -5,6 +5,7 @@ from pathlib import Path
 
 from flask import current_app, g, request
 from jsonschema import Draft202012Validator
+from sqlalchemy.exc import IntegrityError
 
 from errors import ApiError
 
@@ -32,6 +33,16 @@ def close_session():
     db = g.pop("db", None)
     if db is not None:
         db.close()
+
+
+def commit(session, conflict_message):
+    """Commit request's change to database. Trigger rollback upon errors."""
+    try:
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        raise ApiError(409, "conflict", conflict_message)
+
 
 def json_body(schema_name):
     """Parse request body and validate against the defined JSON schema."""
