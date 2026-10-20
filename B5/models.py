@@ -93,9 +93,21 @@ class Book(Base):
         }
 
 
-class BookAuthor(Base):  # Another temporary stub
+class BookAuthor(Base):  # Junction table with per-pair role
+    __tablename__ = "book_authors"
+    __table_args__ = (CheckConstraint("role IN ('lead', 'co')"),)
+
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"), primary_key=True)
+    author_id: Mapped[int] = mapped_column(
+        ForeignKey("authors.id", ondelete="CASCADE"), primary_key=True, index=True
+    )
+    role: Mapped[str] = mapped_column(String(8), default="co")
+
+    book: Mapped[Book] = relationship(back_populates="author_links")
+    author: Mapped[Author] = relationship()
+
     def to_dict(self):
-        pass
+        return {"id": self.author.id, "name": self.author.name, "role": self.role}
 
 
 class Review(Base):
