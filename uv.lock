@@ -353,6 +353,7 @@ dependencies = [
     { name = "gunicorn" },
     { name = "marshmallow" },
     { name = "psycopg", extra = ["binary"] },
+    { name = "pytest" },
 ]
 
 [package.optional-dependencies]
@@ -368,6 +369,7 @@ requires-dist = [
     { name = "gunicorn" },
     { name = "marshmallow", specifier = ">=3.20" },
     { name = "psycopg", extras = ["binary"] },
+    { name = "pytest", specifier = ">=9.2.0" },
     { name = "pytest", marker = "extra == 'test'" },
 ]
 provides-extras = ["test"]
