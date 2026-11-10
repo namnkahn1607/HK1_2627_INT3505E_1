@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import IntegrityError
 
-from ..errors import Conflict, NotFound
+from ..errors import Conflict, NotFound, OutOfStock
 from ..extensions import db
 from ..models import Product
-from .schemas import ProductIn, ProductOut, ProductPatch
+from .schemas import ProductIn, ProductOut, ProductPatch, ReserveIn
 
 products_bp = Blueprint("products", __name__, url_prefix="/api/v1/products")
 
@@ -45,6 +45,22 @@ def create_product():
         db.session.rollback()
         raise Conflict("sku already exists")
     return jsonify(ProductOut().dump(p)), 201
+
+
+@products_bp.post("/<int:id>/reserve")
+def reserve_product(id):
+    qty = ReserveIn().load(request.get_json())["qty"] # type: ignore
+    p = _get_active(id)
+    result = db.session.execute(
+        db.update(Product)
+        .where(Product.id == id, Product.qty_in_stock >= qty)
+        .values(qty_in_stock=Product.qty_in_stock - qty)
+    )
+    if result.rowcount == 0: # type: ignore
+        db.session.rollback()
+        raise OutOfStock(f"only {p.qty_in_stock} left")
+    db.session.commit()
+    return jsonify(ProductOut().dump(p))
 
 
 @products_bp.delete("/<int:id>")

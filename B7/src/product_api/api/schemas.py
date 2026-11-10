@@ -27,3 +27,7 @@ class ProductPatch(Schema):
     description = fields.Str(allow_none=True, validate=validate.Length(max=2000))
     price_cents = fields.Int(validate=price)
     qty_in_stocks = fields.Int(validate=stock)
+
+
+class ReserveIn(Schema):
+    qty = fields.Int(required=True, validate=validate.Range(min=1))
