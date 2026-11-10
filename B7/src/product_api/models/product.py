@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from ..extensions import db
 
+
 class Product(db.Model):
     __tablename__ = "products"
 
