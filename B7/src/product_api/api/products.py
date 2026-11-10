@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from ..errors import Conflict, NotFound
 from ..extensions import db
 from ..models import Product
-from .schemas import ProductIn, ProductOut
+from .schemas import ProductIn, ProductOut, ProductPatch
 
 products_bp = Blueprint("products", __name__, url_prefix="/api/v1/products")
 
@@ -53,3 +53,13 @@ def delete_product(id):
     p.archived = True
     db.session.commit()
     return "", 204
+
+
+@products_bp.patch("/<int:id>")
+def patch_product(id):
+    body = ProductPatch().load(request.get_json())
+    p = _get_active(id)
+    for k, v in body.items(): # type: ignore
+        setattr(p, k, v)
+    db.session.commit()
+    return jsonify(ProductOut().dump(p))
