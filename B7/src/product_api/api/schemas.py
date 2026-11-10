@@ -14,7 +14,7 @@ class ProductOut(Schema):
     archived = fields.Bool()
 
 
-class ProductInt(Schema):
+class ProductIn(Schema):
     sku = fields.Str(required=True, validate=validate.Length(min=3, max=32))
     name = fields.Str(required=True, validate=validate.Length(min=1, max=255))
     description = fields.Str(allow_none=True, validate=validate.Length(max=2000))
