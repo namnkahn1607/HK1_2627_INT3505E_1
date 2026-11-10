@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, request
+from sqlalchemy.exc import IntegrityError
 
-from ..errors import NotFound
+from ..errors import Conflict, NotFound
 from ..extensions import db
 from ..models import Product
-from .schemas import ProductOut
+from .schemas import ProductIn, ProductOut
 
 products_bp = Blueprint("products", __name__, url_prefix="/api/v1/products")
 
@@ -30,4 +31,25 @@ def list_products():
 
 @products_bp.get("/<int:id>")
 def get_product(id):
-    return jsonify(items=ProductOut().dump(_get_active(id)))
+    return jsonify(ProductOut().dump(_get_active(id)))
+
+
+@products_bp.post("")
+def create_product():
+    body = ProductIn().load(request.get_json())
+    p = Product(**body) # type: ignore
+    db.session.add(p)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        raise Conflict("sku already exists")
+    return jsonify(ProductOut().dump(p)), 201
+
+
+@products_bp.delete("/<int:id>")
+def delete_product(id):
+    p = _get_active(id)
+    p.archived = True
+    db.session.commit()
+    return "", 204
