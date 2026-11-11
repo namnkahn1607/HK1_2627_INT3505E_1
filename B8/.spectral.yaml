@@ -1,0 +1,17 @@
+extends: ["spectral:oas"]
+
+rules:
+  operation-operationId: error
+
+  no-response-body-on-204:
+    description: "HTTP 204 No Content must not declare a message body."
+    message: "204 response must not have a content field defined."
+    severity: error
+    given: "$.paths.*.*.responses['204']"
+    then:
+      field: content
+      function: falsy
+
+  info-contact: off
+  operation-description: off
+  operation-tags: off
