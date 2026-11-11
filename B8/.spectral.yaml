@@ -12,6 +12,30 @@ rules:
       field: content
       function: falsy
 
+  response-200-schema-must-have-properties:
+    description: "Response 200 schema must define at least one property."
+    message: "Schema for 200 response must have defined properties."
+    severity: error
+    given: "$.paths.*.*.responses['200'].content['application/json'].schema"
+    resolved: true
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          anyOf:
+            - type: object
+              required: [properties]
+              properties:
+                properties:
+                  type: object
+                  minProperties: 1
+            - type: object
+              required: [items]
+              properties:
+                items:
+                  type: object
+
   info-contact: off
   operation-description: off
   operation-tags: off
