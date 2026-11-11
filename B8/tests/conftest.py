@@ -24,7 +24,9 @@ def client(app):
 @pytest.fixture()
 def sample_book(app):
     with app.app_context():
-        book = Book(title="API Design Patterns", author="J.J. Geewax", year=2021)
+        book = Book(
+            title="API Design Patterns", author="J.J. Geewax", year=2021, isbn="9780132350884", # type: ignore
+        )
         db.session.add(book)
         db.session.commit()
         return book.id
