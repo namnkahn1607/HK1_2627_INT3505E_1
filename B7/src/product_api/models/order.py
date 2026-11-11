@@ -13,6 +13,10 @@ class Order(db.Model):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     items: Mapped[list["OrderItem"]] = relationship(back_populates="order", cascade="all, delete-orphan")
 
+    @property
+    def total_cents(self):
+        return sum(i.qty * i.unit_price_cents for i in self.items)
+
 
 class OrderItem(db.Model):
     __tablename__ = "order_items"
@@ -23,4 +27,4 @@ class OrderItem(db.Model):
     qty: Mapped[int]
     unit_price_cents: Mapped[int]
 
-    orders: Mapped["Order"] = relationship(back_populates="items")
+    order: Mapped["Order"] = relationship(back_populates="items")
