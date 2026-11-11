@@ -27,6 +27,7 @@ def create_order():
 
 @orders_bp.get("")
 def list_orders():
+    # selectinload: 1 query orders + 1 query items (avoid N+1)
     stmt = db.select(Order).options(selectinload(Order.items)).order_by(Order.id)
     return jsonify(OrderOut(many=True).dump(db.session.scalars(stmt).all()))
 
