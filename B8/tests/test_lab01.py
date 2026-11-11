@@ -15,6 +15,10 @@ Useful imports:
 Do not depend on test execution order. Fixtures: client, app, sample_book.
 """
 
+from jsonschema import validate, ValidationError
+import pytest
+from tools import get_book_schema
+
 def test_get_books_empty_db(client):
     response = client.get("/books")
     assert response.status_code == 200
@@ -54,3 +58,25 @@ def test_delete_then_get(client):
 
     get_res = client.get(f"/books/{book_id}")
     assert get_res.status_code == 404
+
+@pytest.fixture
+def leaked_book_fixture(client, sample_book):
+    response = client.get(f"/books/{sample_book}")
+    assert response.status_code == 200
+    data = response.get_json()
+    data["password_hash"] = "pbkdf2:sha256:260000$secret$hash"
+    return data
+
+
+def test_response_extra_field_blocked(client, sample_book, leaked_book_fixture):
+    schema = get_book_schema()
+
+    response = client.get(f"/books/{sample_book}")
+    assert response.status_code == 200
+    book_data = response.get_json()
+    validate(instance=book_data, schema=schema)
+
+    with pytest.raises(ValidationError) as exc_info:
+        validate(instance=leaked_book_fixture, schema=schema)
+
+    assert "password_hash" in str(exc_info.value)
